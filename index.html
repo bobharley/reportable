@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Reportable demo</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>    
+</head>
+<body>
+    <div class="table-container"></div>
+
+
+    <script src="reportable.js"></script>
+    <script>
+        let data = [
+            ["id", "name", "company"],
+            [0, "Erlich Bachman", "pied piper"],
+            [1, "Richard Hendricks", "pied piper"],
+            [2, "Gavin Belson", "Hooli"],
+            [3, "Jack Barker", "Hooli"],
+            [4, "Monica Hall", "Bream Hall"],
+            [5, "Ed Chen", "Raviga"]
+        ]
+        let table1 = new Reportable(data, {
+            container: '.table-container'
+        });
+    </script>
+</body>
+</html>
