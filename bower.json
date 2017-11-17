@@ -1,0 +1,17 @@
+{
+  "name": "reportable",
+  "description": "",
+  "main": "reportable.js",
+  "authors": [
+    "Harley Dela Cruz"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/bobharley/reportable",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
