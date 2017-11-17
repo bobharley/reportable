@@ -18,11 +18,12 @@ var Reportable = function () {
 				this.enablePageInfo = !!options.pageInfo;
 				this.enablePageLength = !!options.pageLength.enabled;
 				this.enableSearch = !!options.search;
+				var callback = this.options != undefined ? this.options.callback : undefined;
 				this.title = options.title != undefined ? options.title : '';
 				this.searchdata = data.slice(1);
 				this.tabledata = data.slice();
 				this.injectCss();
-				this.renderTable(data, this.container);
+				this.renderTable(data, this.container, callback);
 				this.addEventListeners();
 			}
 		}
@@ -216,7 +217,7 @@ var Reportable = function () {
 		}
 	}, {
 		key: 'renderTable',
-		value: function renderTable(data, container) {
+		value: function renderTable(data, container, callback) {
 			container.classList.add('reportable');
 			var table = void 0;
 			var thead = '';
@@ -258,6 +259,9 @@ var Reportable = function () {
 			table = '\n\t\t\t' + tableheader + '\n\t\t\t<table>\n\t\t\t' + thead + '\n\t\t\t' + tbody + '\n\t\t\t<table>\n\t\t\t' + tablefooter + '\n\t\t';
 
 			container.innerHTML = table;
+			if (callback) {
+				callback();
+			}
 			this.updateTableInfo();
 		}
 	}, {
