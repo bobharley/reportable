@@ -219,7 +219,7 @@ Reportable.prototype.renderTable = function (data, container) {
 
 	var paginationHtml = '\n\t\t<div class="pagination">\n\t\t\t<button class="left-arrow"><span class="material-icons">keyboard_arrow_left</span></button>\n\t\t\t<button class="right-arrow"><span class="material-icons">keyboard_arrow_right</span></button>\n\t\t</div>\n\t';
 
-	var tablefooter = '\n\t\t<div class="table-footer">\n\t\t\t' + (this.enablePageLength && this.enablePagination ? paginationHtml : '') + '\t\n\t\t\t<div class="table-info">\n\t\t\t\t<span>1-10 of 100</span>\n\t\t\t</div>\n\t\t\t' + (this.enablePageLength && this.enablePagination ? rowsperpageHtml : '') + '\t\n\t\t</div>\n\t';
+	var tablefooter = '\n\t\t<div class="table-footer">\n\t\t\t' + (this.enablePageLength && this.enablePagination ? paginationHtml : '') + '\t\n\t\t\t' + (this.enablePageInfo ? '<div class="table-info">\n\t\t\t\t<span>1-10 of 100</span>\n\t\t\t</div>' : '') + '\n\t\t\t' + (this.enablePageLength && this.enablePagination ? rowsperpageHtml : '') + '\t\n\t\t</div>\n\t';
 
 	var headers = data[0];
 	headers.forEach(function (header, index) {
