@@ -7,10 +7,10 @@ var Reportable = function Reportable(data) {
 		this.container = document.querySelector(options.container);
 		if (this.container) {
 			this.defaultPageLength = options.pageLength != undefined && options.pageLength.default != undefined ? options.pageLength.default != 'all' ? isNaN(options.pageLength.default) ? 5 : parseInt(options.pageLength.default) : 'all' : 5;
-			this.enablePagination = !!options.pagination;
-			this.enablePageInfo = !!options.pageInfo;
-			this.enablePageLength = !!options.pageLength.enabled;
-			this.enableSearch = !!options.search;
+			this.enablePagination = options.pagination != undefined ? !!options.pagination : true;
+			this.enablePageInfo = options.pageInfo != undefined ? !!options.pageInfo : true;
+			this.enablePageLength = options.pageLength != undefined ? !!options.pageLength.enabled : true;
+			this.enableSearch = options.search != undefined ? !!options.search : true;
 			this.title = options.title != undefined ? options.title : '';
 			var callback = this.options != undefined ? this.options.callback : undefined;
 			this.title = options.title != undefined ? options.title : '';
