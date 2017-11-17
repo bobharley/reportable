@@ -12,14 +12,16 @@ var Reportable = function Reportable(data) {
 			this.enablePageLength = options.pageLength != undefined ? !!options.pageLength.enabled : true;
 			this.enableSearch = options.search != undefined ? !!options.search : true;
 			this.title = options.title != undefined ? options.title : '';
-			var callback = this.options != undefined ? this.options.callback : undefined;
 			this.title = options.title != undefined ? options.title : '';
 			this.searchdata = data.slice(1);
 			this.tabledata = data.slice();
 			this.injectCss();
-			this.renderTable(data, this.container, callback);
+			this.renderTable(data, this.container);
 			this.addEventListeners();
 		}
+	}
+	if(options && options.callback) {
+		options.callback();
 	}
 };
 
@@ -204,7 +206,7 @@ Reportable.prototype.addEventListeners = function () {
 	}
 };
 
-Reportable.prototype.renderTable = function (data, container, callback) {
+Reportable.prototype.renderTable = function (data, container) {
 	container.classList.add('reportable');
 	var table = void 0;
 	var thead = '';
@@ -246,9 +248,6 @@ Reportable.prototype.renderTable = function (data, container, callback) {
 	table = '\n\t\t' + tableheader + '\n\t\t<table>\n\t\t' + thead + '\n\t\t' + tbody + '\n\t\t<table>\n\t\t' + tablefooter + '\n\t';
 
 	container.innerHTML = table;
-	if (callback) {
-		callback();
-	}
 	this.updateTableInfo();
 };
 
