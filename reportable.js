@@ -3,7 +3,12 @@ const Reportable = class {
 		if (data != undefined && Array.isArray(data) && data.length > 0) {
 			this.container = document.querySelector(options.container);
 			if (this.container) {
-				this.defaultPageLength = (options.pageLength != undefined) ? ((options.pageLength != 'all') ? ((isNaN(options.pageLength)) ? 5 : parseInt(options.pageLength)) : 'all') : 5;
+				this.defaultPageLength = (options.pageLength != undefined && options.pageLength.default != undefined) ? ((options.pageLength.default != 'all') ? ((isNaN(options.pageLength.default)) ? 5 : parseInt(options.pageLength.default)) : 'all') : 5;
+				this.enablePagination = !!(options.pagination);
+				this.enablePageInfo = !!(options.pageInfo);
+				this.enablePageLength = !!(options.pageLength.enabled);
+				this.enableSearch = !!(options.search);
+				this.title = (options.title != undefined) ? options.title : '';
 				this.searchdata = data.slice(1);
 				this.tabledata = data.slice();
 				this.injectCss();
@@ -14,10 +19,6 @@ const Reportable = class {
 	}
 
 	sortRows(data, index = 0, order = 'asc') {
-		if (data.length > 0) {
-			let table = this.container.querySelector('table');
-			if (table) table.dataset.page = 0;
-		}
 		if (data) {
 			return data.sort((a, b) => {
 				return (order === 'asc') ? (a[index] > b[index] ? 1 : -1) : (a[index] > b[index] ? -1 : 1);
@@ -40,7 +41,7 @@ const Reportable = class {
 				let page = table.dataset.page != undefined ? parseInt(table.dataset.page) : 0;
 				let numRowsVisible = (table.querySelectorAll('tbody tr')).length;
 				leftArrow.disabled = (page == 0);
-				rightArrow.disabled = (this.searchdata.length <= (parseInt(rowsperpage.value) * page) + numRowsVisible)
+				rightArrow.disabled = (this.searchdata.length <= (parseInt(rowsperpage.value) * page) + numRowsVisible);
 			}
 		}
 	}
@@ -76,7 +77,7 @@ const Reportable = class {
 					tr += `
 						<td>${column}</td>
 					`;
-				})
+				});
 				tr = `
 					<tr>
 						${tr}
@@ -116,7 +117,7 @@ const Reportable = class {
 			let table = this.container.querySelector('table');
 			if (table) table.dataset.page = 0;
 			this.updateTable(matches);
-		}
+		};
 		
 		if (searchinput) {
 			searchinput.addEventListener('change', displayMatches);
@@ -212,38 +213,53 @@ const Reportable = class {
 		let table;
 		let thead = '';
 		let tbody = '';
+		let searchHtml = `
+			<div class="search">
+				<input type="text" name="search" placeholder="Search" autocomplete="off">
+			</div>
+		`;
+
 		let tableheader = `
 			<div class="table-header">
-				<div class="table-tools">
-					<div class="search">
-						<input type="text" name="search" placeholder="Search" autocomplete="off">
-					</div>
+				<div class="title-wrapper">
+					<h2 class="title">${this.title}</h2>
 				</div>
+				<div class="table-tools">
+					${this.enableSearch ? searchHtml : ''}
+				</div>
+			</div>
+		`;
+
+		let rowsperpageHtml = `
+			<div class="rows-per-page">
+				<label>Rows per page:</label>
+				<div class="select-wrapper">
+					<select>
+						<option value="5" ${this.defaultPageLength == 5 ? 'selected' : ''}>5</option>
+						<option value="10" ${this.defaultPageLength == 10 ? 'selected' : ''}>10</option>
+						<option value="25" ${this.defaultPageLength == 25 ? 'selected' : ''}>25</option>
+						<option value="50" ${this.defaultPageLength == 50 ? 'selected' : ''}>50</option>
+						<option value="100" ${this.defaultPageLength == 100 ? 'selected' : ''}>100</option>
+						<option value="all" ${this.defaultPageLength == 'all' ? 'selected' : ''}>All</option>
+					</select>
+				</div>
+			</div>
+		`;
+		
+		let paginationHtml = `
+			<div class="pagination">
+				<button class="left-arrow"><span class="material-icons">keyboard_arrow_left</span></button>
+				<button class="right-arrow"><span class="material-icons">keyboard_arrow_right</span></button>
 			</div>
 		`;
 
 		let tablefooter = `
 			<div class="table-footer">
-				<div class="pagination">
-					<button class="left-arrow"><span class="material-icons">keyboard_arrow_left</span></button>
-					<button class="right-arrow"><span class="material-icons">keyboard_arrow_right</span></button>
-				</div>
+				${this.enablePageLength && this.enablePagination ? paginationHtml : ''}	
 				<div class="table-info">
 					<span>1-10 of 100</span>
 				</div>
-				<div class="rows-per-page">
-					<label>Rows per page:</label>
-					<div class="select-wrapper">
-						<select>
-							<option value="5" ${this.defaultPageLength == 5 ? 'selected' : ''}>5</option>
-							<option value="10" ${this.defaultPageLength == 10 ? 'selected' : ''}>10</option>
-							<option value="25" ${this.defaultPageLength == 25 ? 'selected' : ''}>25</option>
-							<option value="50" ${this.defaultPageLength == 50 ? 'selected' : ''}>50</option>
-							<option value="100" ${this.defaultPageLength == 100 ? 'selected' : ''}>100</option>
-							<option value="all" ${this.defaultPageLength == 'all' ? 'selected' : ''}>All</option>
-						</select>
-					</div>
-				</div>
+				${this.enablePageLength && this.enablePagination ? rowsperpageHtml : ''}	
 			</div>
 		`;
 
@@ -272,7 +288,7 @@ const Reportable = class {
 				tr += `
 					<td>${column}</td>
 				`;
-			})
+			});
 			tr = `
 				<tr>
 					${tr}
@@ -281,7 +297,7 @@ const Reportable = class {
 
 			tbody += tr;
 			counter++;
-		})
+		});
 
 		tbody = `
 			<tbody>
@@ -317,15 +333,39 @@ const Reportable = class {
 				}
 
 				.reportable .table-header {
+					position: relative;
 					height: 68px;
+					width: 100%;
 					padding: 24px;
 				}
 
-				.reportable .table-header .search {
-					float: right;
-					position: relative;
+				.reportable .title-wrapper {
+					position: absolute;
+					top: 50%;
+					left: 24px;
+					transform: translateY(-50%);
+					width: 50%;
+				}
+
+				.reportable .title-wrapper .title {
+					font-size: 20px;
+					text-transform: capitalize;
+					font-weight: 400;
+					color: #212121;
+					text-overflow: ellipsis;
+				}
+
+				.reportable .table-header .table-tools {
+					position: absolute;
+					right: 24px;
 					top: 50%;
 					transform: translateY(-50%);
+					width: 50%;
+					max-width: 240px;
+				}
+
+				.reportable .table-header .search {
+					position: relative;
 					max-width: 100%;
 					width: 240px;
 				}
@@ -517,4 +557,4 @@ const Reportable = class {
 			document.querySelector('head').insertAdjacentHTML('beforeend', css);
 		}
 	}
-}
+};

@@ -30,7 +30,15 @@
             [5, "Ed Chen", "Raviga"]
         ]
         let table1 = new Reportable(data, {
-            container: '.table-container'
+            container: '.table-container',
+            title: "sample table",
+            pagination: true,
+            pageLength: {
+                enabled: true,
+                default: 5
+            },
+            search: true,
+            pageInfo: true,
         });
     </script>
 </body>
